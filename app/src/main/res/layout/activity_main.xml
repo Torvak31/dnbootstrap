@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <git.artdeell.dnbootstrap.input.TouchCharInput
+        android:id="@+id/touch_char_input"
+        android:layout_width="128dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="-64dp"/>
+
+    <SurfaceView
+        android:id="@+id/surface_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <git.artdeell.dnbootstrap.glfw.GLFWCursorView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <git.artdeell.dnbootstrap.input.ControlLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <git.artdeell.dnbootstrap.input.ControlButton
+            android:layout_height="64dp"
+            android:layout_width="64dp"
+            android:id="@+id/test_button_as"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="AS"
+            app:button_keycode="65"
+            app:button_keycode2="83"
+            app:sticky="false" />
+        <git.artdeell.dnbootstrap.input.ControlButton
+            android:layout_height="64dp"
+            android:layout_width="64dp"
+            android:id="@+id/test_button_a"
+            app:layout_constraintBottom_toTopOf="@id/test_button_as"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="A"
+            app:button_keycode="65"
+            app:sticky="false" />
+        <git.artdeell.dnbootstrap.input.ControlButton
+            android:layout_height="64dp"
+            android:layout_width="64dp"
+            android:id="@+id/test_button_aw"
+            app:layout_constraintBottom_toTopOf="@id/test_button_a"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="AW"
+            app:button_keycode="65"
+            app:button_keycode2="87"
+            app:sticky="false" />
+        <git.artdeell.dnbootstrap.input.ControlButton
+            android:layout_height="64dp"
+            android:layout_width="64dp"
+            android:id="@+id/test_button_w"
+            app:layout_constraintBottom_toBottomOf="@id/test_button_aw"
+            app:layout_constraintStart_toEndOf="@id/test_button_aw"
+            android:text="W"
+            app:button_keycode="87"
+            app:sticky="false" />
+        <git.artdeell.dnbootstrap.input.ControlButton
+            android:layout_height="64dp"
+            android:layout_width="64dp"
+            android:id="@+id/test_button_wd"
+            app:layout_constraintBottom_toBottomOf="@id/test_button_w"
+            app:layout_constraintStart_toEndOf="@id/test_button_w"
+            android:text="WD"
+            app:button_keycode="87"
+            app:button_keycode2="68"
+            app:sticky="false" />
+
+        <git.artdeell.dnbootstrap.input.ControlButton
+            android:layout_height="64dp"
+            android:layout_width="64dp"
+            android:id="@+id/test_button_d"
+            app:layout_constraintTop_toBottomOf="@id/test_button_wd"
+            app:layout_constraintStart_toStartOf="@id/test_button_wd"
+            android:text="D"
+            app:button_keycode="68"
+            app:sticky="false" />
+        <git.artdeell.dnbootstrap.input.ControlButton
+            android:layout_height="64dp"
+            android:layout_width="64dp"
+            android:id="@+id/test_button_sd"
+            app:layout_constraintTop_toBottomOf="@id/test_button_d"
+            app:layout_constraintStart_toStartOf="@id/test_button_d"
+            android:text="SD"
+            app:button_keycode="68"
+            app:button_keycode2="83"
+            app:sticky="false" />
+        <git.artdeell.dnbootstrap.input.ControlButton
+            android:layout_height="64dp"
+            android:layout_width="64dp"
+            android:id="@+id/test_button_s"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/test_button_a"
+            android:text="S"
+            app:button_keycode="83"
+            app:sticky="false" />
+
+        <git.artdeell.dnbootstrap.input.ControlButton
+            android:layout_height="64dp"
+            android:layout_width="64dp"
+            android:id="@+id/test_button_pri"
+            android:layout_marginTop="64dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="@id/test_button_a"
+            android:text="PRI"
+            app:button_keycode="-1"
+            app:sticky="true" />
+
+        <git.artdeell.dnbootstrap.input.ControlButton
+            android:layout_height="64dp"
+            android:layout_width="64dp"
+            android:layout_marginTop="64dp"
+            android:id="@+id/test_button_sec"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="@id/test_button_d"
+            android:text="SEC"
+            app:button_keycode="-2"
+            app:sticky="true" />
+
+        <git.artdeell.dnbootstrap.input.ControlButton
+            android:layout_height="64dp"
+            android:layout_width="64dp"
+            android:layout_marginStart="64dp"
+            android:id="@+id/test_button_kbd"
+            app:layout_constraintTop_toTopOf="@id/test_button_sec"
+            app:layout_constraintStart_toEndOf="@id/test_button_sec"
+            android:text="KBD"
+            app:button_keycode="-4"
+            app:sticky="true" />
+
+        <git.artdeell.dnbootstrap.input.ControlButton
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginStart="64dp"
+            android:id="@+id/test_button_e"
+            app:layout_constraintTop_toTopOf="@id/test_button_d"
+            app:layout_constraintStart_toEndOf="@id/test_button_d"
+            android:text="E"
+            app:button_keycode="69"/>
+
+        <git.artdeell.dnbootstrap.input.ControlButton
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginEnd="64dp"
+            android:id="@+id/test_button_spc"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/test_button_d"
+            android:text="SPC"
+            app:button_keycode="32"/>
+
+
+    </git.artdeell.dnbootstrap.input.ControlLayout>
+
+</FrameLayout>

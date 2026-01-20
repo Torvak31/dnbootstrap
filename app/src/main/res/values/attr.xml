@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ControlButton">
+        <attr name="button_keycode" format="integer"/>
+        <attr name="button_keycode2" format="integer"/>
+        <attr name="sticky" format="boolean"/>
+        <attr name="cursorPassThru" format="boolean"/>
+    </declare-styleable>
+
+    <attr name="controlButtonStyle" format="reference"/>
+
+    <style name="AppTheme" parent="@style/Theme.AppCompat">
+        <item name="controlButtonStyle">@style/ControlButton</item>
+    </style>
+
+    <style name="ControlButton">
+        <item name="android:gravity">center</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:background">#3f000000</item>
+        <item name="android:width">64dp</item>
+        <item name="android:height">64dp</item>
+    </style>
+</resources>
