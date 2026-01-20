@@ -55,7 +55,7 @@ static void dnb_run_v2(void* hostfxr_ptr, const char* dotnetRoot) {
     hostfxr_main_startupinfo_fn main_startupinfo_fn = dlsym(hostfxr_ptr, "hostfxr_main_startupinfo");
     //setenv("MONO_ENV_OPTIONS", "--trace=T:Vintagestory.Client.NoObf.ShaderProgramFinal", true);
     //setenv("MONO_ENV_OPTIONS", "--interpreter", true);
-    //setenv("LIBGL_EGL", "libEGL_angle.so", true);
+    setenv("LIBGL_EGL", "libEGL_angle.so", true);
     char hostPath[PATH_MAX];
     snprintf(hostPath, PATH_MAX, "%s/%s", dotnetRoot, "dotnet");
     char appPath[PATH_MAX];
