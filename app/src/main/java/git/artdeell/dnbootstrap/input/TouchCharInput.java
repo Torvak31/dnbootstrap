@@ -74,6 +74,7 @@ public class TouchCharInput extends EditText {
     }
 
     private void requestShowIme() {
+        keyboardRequestPending = false;
         if(Build.VERSION.SDK_INT >= 30) {
             WindowInsetsController controller = getWindowInsetsController();
             if(controller == null) return;
