@@ -1,11 +1,12 @@
 package git.artdeell.dnbootstrap.input;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.inputmethod.InputMethodManager;
@@ -17,8 +18,10 @@ import androidx.annotation.Nullable;
 import git.artdeell.dnbootstrap.glfw.GLFW;
 import git.artdeell.dnbootstrap.glfw.KeyCodes;
 
+@SuppressLint("AppCompatCustomView")
 public class TouchCharInput extends EditText {
     private static final String DEFAULT_CHARS = " ";
+    private boolean keyboardRequestPending = false;
     public TouchCharInput(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setText(DEFAULT_CHARS);
@@ -63,6 +66,14 @@ public class TouchCharInput extends EditText {
     }
 
     public void requestKeyboard() {
+        if(isFocused()) requestShowIme();
+        else {
+            keyboardRequestPending = true;
+            requestFocus();
+        }
+    }
+
+    private void requestShowIme() {
         if(Build.VERSION.SDK_INT >= 30) {
             WindowInsetsController controller = getWindowInsetsController();
             if(controller == null) return;
@@ -71,6 +82,12 @@ public class TouchCharInput extends EditText {
             InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
         }
+    }
+
+    @Override
+    protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+        super.onFocusChanged(focused, direction, previouslyFocusedRect);
+        if(keyboardRequestPending && focused) requestShowIme();
     }
 
     @Override
