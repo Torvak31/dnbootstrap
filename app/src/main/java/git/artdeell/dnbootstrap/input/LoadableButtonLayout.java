@@ -1,6 +1,7 @@
 package git.artdeell.dnbootstrap.input;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -14,7 +15,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import git.artdeell.dnbootstrap.R;
 import git.artdeell.dnbootstrap.input.model.LayoutDescription;
@@ -50,17 +54,35 @@ public class LoadableButtonLayout extends ViewGroup {
                 .registerTypeAdapter(ViewCreator.class, new ViewCreatorHelper());
     }
 
+    private void loadFromStream(InputStream inputStream) throws Exception {
+        Gson gson = controlsGson().create();
+        LayoutDescription layoutDescription;
+        try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream)){
+            layoutDescription = gson.fromJson(inputStreamReader, LayoutDescription.class);
+        }
+        post(()->load(layoutDescription));
+
+    }
+
+    private void tryLoadLayout() throws Exception {
+        Context context = getContext();
+        File layoutPath = new File(context.getFilesDir(), "layout.json");
+        try (FileInputStream fileInputStream = new FileInputStream(layoutPath)) {
+            loadFromStream(fileInputStream);
+            return;
+        } catch (IOException ignored) {}
+        AssetManager assetManager = context.getAssets();
+        try(InputStream defaultLayoutStream = assetManager.open("layout-default.json")) {
+            loadFromStream(defaultLayoutStream);
+        }
+    }
     public void loadAsync() {
-        File layoutPath = new File(getContext().getFilesDir(), "layout.json");
-        new Thread(()->{
-            Gson gson = controlsGson().create();
-            LayoutDescription layoutDescription;
-            try (FileReader fileReader = new FileReader(layoutPath)){
-                layoutDescription = gson.fromJson(fileReader, LayoutDescription.class);
+        new Thread(()-> {
+            try {
+                tryLoadLayout();
             }catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            post(()->load(layoutDescription));
         }).start();
     }
 
