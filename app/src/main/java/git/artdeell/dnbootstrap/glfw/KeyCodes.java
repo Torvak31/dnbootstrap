@@ -1,6 +1,13 @@
 package git.artdeell.dnbootstrap.glfw;
 
 public class KeyCodes {
+    public static final int SPECIAL_KEY_MOUSE_LEFT      = -1;
+    public static final int SPECIAL_KEY_MOUSE_RIGHT     = -2;
+    public static final int SPECIAL_KEY_MOUSE_MIDDLE    = -3;
+    public static final int SPECIAL_KEY_OPEN_KEYBOARD   = -4;
+    public static final int SPECIAL_KEY_OPEN_EDITOR     = -5;
+
+    public static final int GLFW_KEY_NONE               = 0;
     public static final int GLFW_KEY_SPACE              = 32;
     public static final int GLFW_KEY_APOSTROPHE         = 39;  /* ' */
     public static final int GLFW_KEY_COMMA              = 44;  /* , */
@@ -124,20 +131,7 @@ public class KeyCodes {
     public static final int GLFW_KEY_RIGHT_SUPER        = 347;
     public static final int GLFW_KEY_MENU               = 348;
 
-    public static final int GLFW_KEY_LAST               = GLFW_KEY_MENU;
-
-    public static final int GLFW_MOUSE_BUTTON_1         = 0;
-    public static final int GLFW_MOUSE_BUTTON_2         = 1;
-    public static final int GLFW_MOUSE_BUTTON_3         = 2;
-    public static final int GLFW_MOUSE_BUTTON_4         = 3;
-    public static final int GLFW_MOUSE_BUTTON_5         = 4;
-    public static final int GLFW_MOUSE_BUTTON_6         = 5;
-    public static final int GLFW_MOUSE_BUTTON_7         = 6;
-    public static final int GLFW_MOUSE_BUTTON_8         = 7;
-    public static final int GLFW_MOUSE_BUTTON_LAST      = GLFW_MOUSE_BUTTON_8;
-    public static final int GLFW_MOUSE_BUTTON_LEFT      = GLFW_MOUSE_BUTTON_1;
-    public static final int GLFW_MOUSE_BUTTON_RIGHT     = GLFW_MOUSE_BUTTON_2;
-    public static final int GLFW_MOUSE_BUTTON_MIDDLE    = GLFW_MOUSE_BUTTON_3;
+    public static final int GLFW_KEY_LAST              = GLFW_KEY_MENU;
 
     public static final int GLFW_RELEASE                = 0;
     public static final int GLFW_PRESS                  = 1;

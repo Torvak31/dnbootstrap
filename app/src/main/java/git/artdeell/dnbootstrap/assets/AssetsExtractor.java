@@ -1,20 +1,17 @@
 package git.artdeell.dnbootstrap.assets;
 
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.net.Uri;
 import android.util.Log;
 
 import org.apache.commons.io.FileUtils;
 
-import java.io.File;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 
-import git.artdeell.dnbootstrap.Utils;
+import git.artdeell.dnbootstrap.utils.Utils;
 import git.artdeell.dnbootstrap.io.IOUtil;
 import git.artdeell.dnbootstrap.io.ReadCountInputStream;
 

@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import git.artdeell.dnbootstrap.assets.AppDirs;
+import git.artdeell.dnbootstrap.utils.SymlinkUtil;
 
 public class DotnetStarter {
 

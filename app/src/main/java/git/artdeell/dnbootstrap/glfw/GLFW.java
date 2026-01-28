@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import git.artdeell.dnbootstrap.Utils;
+import git.artdeell.dnbootstrap.utils.Utils;
 
 public class GLFW {
     private static final Set<GrabListener> grabListeners = Collections.newSetFromMap(new WeakHashMap<>());

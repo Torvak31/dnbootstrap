@@ -1,4 +1,4 @@
-package git.artdeell.dnbootstrap;
+package git.artdeell.dnbootstrap.utils;
 
 import java.lang.ref.WeakReference;
 

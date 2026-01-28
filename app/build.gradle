@@ -59,6 +59,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'androidx.annotation:annotation:1.9.1'
     implementation 'org.apache.commons:commons-compress:1.28.0'
+    implementation 'com.google.code.gson:gson:2.13.2'
 
     implementation 'com.github.MojoLauncher:alsoft-android-aar:f369161d5f'
     implementation 'com.github.MojoLauncher:LTW:e81ef96a2b'
