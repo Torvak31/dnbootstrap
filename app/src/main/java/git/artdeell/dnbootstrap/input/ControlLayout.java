@@ -84,26 +84,21 @@ public class ControlLayout extends ConstraintLayout {
         float x = event.getX(pointer), y = event.getY(pointer);
 
         if(action == MotionEvent.ACTION_MOVE) {
-            // If the current pointer is taken over by a sticky view, just update its position
-            // and leave
-            if(lastHit != null && lastHit.consumer.getInputConfiguration().sticky) {
-                lastHit.onTouchPosition(pointerId, x - lastHit.consumer.getLeft(), y - lastHit.consumer.getTop());
-                return;
+            // Always update position for the INITIAL target only (no re-hit-testing)
+            if (lastHit != null && lastHit.isInitialTarget) {
+                lastHit.onTouchPosition(pointerId, x - lastHit.consumer.getLeft(),
+                        y - lastHit.consumer.getTop());
             }
-            HitTarget newHit = hitTest((int)x, (int)y);
-
-            if(lastHit != newHit) {
-                if(lastHit != null) lastHit.onTouchState(pointerId,false);
-                if(newHit != null) newHit.onTouchState(pointerId, true);
-            }
-            if(newHit != null) newHit.onTouchPosition(pointerId, x, y);
-            lastHitTargets.put(pointerId, newHit);
+            return;  // Skip all other logic
         }else if(action == MotionEvent.ACTION_POINTER_UP) {
             if(lastHit != null) lastHit.onTouchState(pointerId, false);
             lastHitTargets.remove(pointerId);
         }else if(action == MotionEvent.ACTION_POINTER_DOWN) {
             HitTarget hit = hitTest((int) x, (int) y);
-            if(hit != null) hit.onTouchState(pointerId, true);
+            if(hit != null) {
+                hit.isInitialTarget = true;  // Mark as owning this pointer
+                hit.onTouchState(pointerId, true);
+            }
             lastHitTargets.put(pointerId, hit);
         }
     }
@@ -146,9 +141,11 @@ public class ControlLayout extends ConstraintLayout {
         public final @NonNull LayoutTouchConsumer consumer;
         private int firstTouchedPointer;
         private boolean lastState;
+        private boolean isInitialTarget = false;
 
         private HitTarget(@NonNull LayoutTouchConsumer consumer) {
             this.consumer = consumer;
+            this.isInitialTarget = false;
         }
 
         public void onTouchState(int pointerId, boolean isTouched) {
@@ -168,6 +165,7 @@ public class ControlLayout extends ConstraintLayout {
 
         public void reset() {
             firstTouchedPointer = -1;
+            isInitialTarget = false;
             if(lastState) consumer.onTouchState(false);
             lastState = false;
         }

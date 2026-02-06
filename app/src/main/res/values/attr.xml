@@ -7,6 +7,18 @@
         <attr name="cursorPassThru" format="boolean"/>
     </declare-styleable>
 
+    <declare-styleable name="ControlJoystick">
+        <attr name="joystickKeyUp" format="integer" />
+        <attr name="joystickKeyDown" format="integer" />
+        <attr name="joystickKeyLeft" format="integer" />
+        <attr name="joystickKeyRight" format="integer" />
+    </declare-styleable>
+
+    <style name="ControlJoystick">
+        <!-- Default visual / behavior overrides if needed -->
+    </style>
+
+
     <attr name="controlButtonStyle" format="reference"/>
 
     <style name="AppTheme" parent="@style/Theme.AppCompat">
