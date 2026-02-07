@@ -32,7 +32,7 @@ static void init_logger() {
     dup2(logfd, 1);
     dup2(logfd, 2);
 
-    setvbuf(stdin, NULL, _IOLBF, 4096);
+    setvbuf(stdout, NULL, _IOLBF, 4096);
     setvbuf(stderr, NULL, _IONBF, 0);
 }
 
