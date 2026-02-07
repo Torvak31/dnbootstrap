@@ -62,10 +62,12 @@ public class ControlButton extends androidx.appcompat.widget.AppCompatTextView i
                 if(context instanceof SoftInputCallback) {
                     ((SoftInputCallback)context).requestSoftInput();
                 }
+                break;
             case KeyCodes.SPECIAL_KEY_OPEN_EDITOR:
                 if(context instanceof LayoutEditorHost) {
                     ((LayoutEditorHost)context).openLayoutEditor();
                 }
+                break;
         }
     }
 
