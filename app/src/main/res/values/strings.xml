@@ -29,4 +29,10 @@
     <string name="grid_layout_global_exit">Exit</string>
     <string name="grid_layout_global_must_have_editor_btn">The control layout must have a button to open the layout editor!</string>
     <string name="grid_layout_editor_hint">Tap a button to edit its settings\nTap the grid to edit global settings and add buttons</string>
+    <string name="manage_data_uninstall_game">Uninstall Vintage Story (preserves user data)</string>
+    <string name="manage_data_uninstall_components">Uninstall all components (preserves user data)</string>
+    <string name="manage_data_uninstall_everything">Clear all data (WILL DELETE YOUR SAVES)</string>
+    <string name="manage_data_share_log_file">Open data directory</string>
+    <string name="manage_data_done">Done!</string>
+    <string name="storageProviderAuthorities">git.artdeell.dnboostrap.gamefiles</string>
 </resources>

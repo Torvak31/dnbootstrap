@@ -56,7 +56,6 @@ public class ReadCountInputStream extends FilterInputStream {
 
     private void updateBytesRead() {
         if(readBytes < 1024 * 1024) return;
-        Log.i("RCIS", "Update: "+readBytes);
         callback.updateBytesRead(readBytes);
         readBytes = 0;
     }
