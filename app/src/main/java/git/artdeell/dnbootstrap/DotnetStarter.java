@@ -18,18 +18,17 @@ public class DotnetStarter {
         return null;
     }
 
-    public static  void kickstart(File baseDir, File appNativeDir) throws IOException {
+    public static void kickstart(AppDirs appDirs, File appNativeDir) throws IOException {
 
-        File homeDir = new File(baseDir, "home");
+        File homeDir = new File(appDirs.base, "home");
         File certsDir = findCertsDir();
 
         if(certsDir == null) throw new IOException("Cannot start: can't find HTTPS certificate directory");
-
-        AppDirs appDirs = new AppDirs(baseDir);
         File trueVsDir = new File(appDirs.vs, "vintagestory");
 
         try {
             Os.setenv("HOME", homeDir.getAbsolutePath(), true);
+            Os.setenv("FONTCONFIG_PATH", appDirs.fontconfig.getAbsolutePath(), true);
             Os.setenv("SSL_CERT_DIR", certsDir.getAbsolutePath(), true);
             Os.setenv("LIBGL_NOERROR", "1", true);
             //Os.setenv("LIBGL_EGL", "libEGL_angle.so", true);
@@ -40,7 +39,7 @@ public class DotnetStarter {
         SymlinkUtil symlinkUtil = new SymlinkUtil(trueVsDir, appNativeDir);
 
         symlinkUtil.symlinkLibrary("libopenal.so", "libopenal.so.1");
-        symlinkUtil.symlinkLibrary("libcairo-2.so", "libcairo.so.2");
+        symlinkUtil.symlinkLibrary("libcairo.so", "libcairo.so.2");
 
         MainActivity.runDotnet(appDirs.runtime.getAbsolutePath(), trueVsDir.getAbsolutePath());
         System.exit(0);

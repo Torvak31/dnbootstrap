@@ -4,7 +4,6 @@ import static android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +15,7 @@ import androidx.annotation.RequiresApi;
 
 import java.io.File;
 
+import git.artdeell.dnbootstrap.assets.AppDirs;
 import git.artdeell.dnbootstrap.glfw.GLFW;
 import git.artdeell.dnbootstrap.glfw.KeyCodes;
 import git.artdeell.dnbootstrap.input.ControlLayout;
@@ -24,7 +24,7 @@ import git.artdeell.dnbootstrap.input.TouchCharInput;
 import git.artdeell.dnbootstrap.input.editor.ControlEditorLayout;
 import git.artdeell.dnbootstrap.input.editor.LayoutEditorHost;
 import git.artdeell.dnbootstrap.utils.InsetUtils;
-import git.artdeell.dnbootstrap.utils.ThrowableUtil;
+import git.artdeell.dnbootstrap.utils.Utils;
 
 public class MainActivity extends Activity implements SoftInputCallback, LayoutEditorHost {
     static {
@@ -91,18 +91,10 @@ public class MainActivity extends Activity implements SoftInputCallback, LayoutE
 
     public void kickstart() {
         try {
-            DotnetStarter.kickstart(getFilesDir(), new File(getApplicationInfo().nativeLibraryDir));
+            DotnetStarter.kickstart(new AppDirs(getFilesDir()), new File(getApplicationInfo().nativeLibraryDir));
         }catch (Throwable t) {
-            showErrorDialog(t);
+            Utils.showErrorDialog(this, t, true);
         }
-    }
-
-    private void showErrorDialog(Throwable t) {
-        runOnUiThread(()-> new AlertDialog.Builder(this)
-                .setTitle(R.string.error)
-                .setMessage(ThrowableUtil.printStackTrace(t))
-                .setPositiveButton(android.R.string.ok, (d, v)->finish())
-                .show());
     }
 
     @SuppressLint("GestureBackNavigation")

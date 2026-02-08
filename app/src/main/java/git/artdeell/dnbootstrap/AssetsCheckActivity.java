@@ -26,7 +26,8 @@ public class AssetsCheckActivity extends AppCompatActivity implements AssetsExtr
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(new AppDirs(getFilesDir()).isFullyInstalled()) {
+        AppDirs appDirs = new AppDirs(getFilesDir());
+        if(appDirs.isFullyInstalled()) {
             exit();
             return;
         }
@@ -36,14 +37,23 @@ public class AssetsCheckActivity extends AppCompatActivity implements AssetsExtr
         assetsMessage = findViewById(R.id.assets_message);
         if(extractorTask != null) {
             connectExtractionTask();
+        }else if(appDirs.isGameInstalled()) {
+            componentsOnlyExtract();
+        }else {
+            selectGameLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), this::fullExtract);
+            selectButton.setOnClickListener((v)-> selectGameLauncher.launch("application/gzip"));
         }
-        selectGameLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), this::extractDotnet);
-        selectButton.setOnClickListener((v)-> selectGameLauncher.launch("application/gzip"));
     }
 
-    private void extractDotnet(Uri gameUri) {
+    private void fullExtract(Uri gameUri) {
         long gameSize = IOUtil.getFileSize(getContentResolver(), gameUri);
         extractorTask = new AssetsExtractor(getApplicationContext(), gameUri, gameSize);
+        connectExtractionTask();
+        new Thread(extractorTask).start();
+    }
+
+    private void componentsOnlyExtract() {
+        extractorTask = new AssetsExtractor(getApplicationContext(), null, 0);
         connectExtractionTask();
         new Thread(extractorTask).start();
     }
