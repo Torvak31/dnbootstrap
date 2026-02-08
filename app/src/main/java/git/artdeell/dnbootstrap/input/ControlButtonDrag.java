@@ -1,9 +1,7 @@
 package git.artdeell.dnbootstrap.input;
 
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.util.AttributeSet;
-import android.util.Log;
+import android.content.res.TypedArray;import android.util.AttributeSet;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -13,21 +11,23 @@ import git.artdeell.dnbootstrap.R;
 import git.artdeell.dnbootstrap.glfw.GLFW;
 import git.artdeell.dnbootstrap.glfw.KeyCodes;
 
-public class ControlButton extends androidx.appcompat.widget.AppCompatTextView implements LayoutTouchConsumer {
+public class ControlButtonDrag extends androidx.appcompat.widget.AppCompatTextView implements LayoutTouchConsumer {
     private final InputConfiguration inputConfiguration = new InputConfiguration();
     private int keyCode = 0, keyCode2 = 0;
+    private boolean deltaReady = false;
+    private float lastX, lastY;
 
-    public ControlButton(@NonNull Context context) {
+    public ControlButtonDrag(@NonNull Context context) {
         super(context);
         init(context, null, R.attr.controlButtonStyle);
     }
 
-    public ControlButton(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public ControlButtonDrag(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs, R.attr.controlButtonStyle);
         init(context, attrs, R.attr.controlButtonStyle);
     }
 
-    public ControlButton(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ControlButtonDrag(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs, defStyleAttr);
     }
@@ -41,7 +41,7 @@ public class ControlButton extends androidx.appcompat.widget.AppCompatTextView i
         }
     }
 
-    public void executeKeyEvent(int code, int state) {
+    private void executeKeyEvent(int code, int state) {
         if(code == 0) return;
         if(code < 0) {
             Context context = getContext();
@@ -70,11 +70,30 @@ public class ControlButton extends androidx.appcompat.widget.AppCompatTextView i
         int state = isTouched ? KeyCodes.GLFW_PRESS : KeyCodes.GLFW_RELEASE;
         executeKeyEvent(keyCode, state);
         executeKeyEvent(keyCode2, state);
+        deltaReady = false;
     }
 
     @Override
     public void onTouchPosition(float x, float y) {
+        if (!deltaReady) {
+            lastX = x;
+            lastY = y;
+            deltaReady = true;
+            return;
+        }
 
+        float deltaX = x - lastX;
+        float deltaY = y - lastY;
+
+        if (getParent() instanceof android.view.View) {
+            android.view.View parentView = (android.view.View) getParent();
+            GLFW.cursorX += deltaX / parentView.getWidth();
+            GLFW.cursorY += deltaY / parentView.getHeight();
+            GLFW.sendMousePos();
+        }
+
+        lastX = x;
+        lastY = y;
     }
 
     @NonNull

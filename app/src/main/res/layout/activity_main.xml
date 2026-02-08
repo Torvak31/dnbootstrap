@@ -24,18 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <git.artdeell.dnbootstrap.input.ControlButton
-            android:id="@+id/test_button_pri"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_marginEnd="20dp"
-            android:foreground="@drawable/mouse_left_button"
-            app:button_keycode="-1"
-            app:layout_constraintEnd_toStartOf="@+id/test_button_sec"
-            app:layout_constraintTop_toTopOf="@+id/test_button_sec"
-            app:sticky="true" />
-
-        <git.artdeell.dnbootstrap.input.ControlButton
+        <git.artdeell.dnbootstrap.input.ControlButtonDrag
             android:id="@+id/test_button_sec"
             android:layout_width="64dp"
             android:layout_height="64dp"
@@ -44,8 +33,17 @@
             android:foreground="@drawable/mouse_right_button"
             app:button_keycode="-2"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:sticky="true" />
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <git.artdeell.dnbootstrap.input.ControlButtonDrag
+            android:id="@+id/test_button_pri"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginEnd="20dp"
+            android:foreground="@drawable/mouse_left_button"
+            app:button_keycode="-1"
+            app:layout_constraintEnd_toStartOf="@+id/test_button_sec"
+            app:layout_constraintTop_toTopOf="@+id/test_button_sec" />
 
         <git.artdeell.dnbootstrap.input.ControlButton
             android:id="@+id/test_button_kbd"
@@ -56,8 +54,7 @@
             android:foreground="@drawable/keyboard"
             app:button_keycode="-4"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:sticky="true" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <git.artdeell.dnbootstrap.input.ControlButton
             android:id="@+id/test_button_m"
@@ -68,8 +65,7 @@
             android:textSize="24sp"
             app:button_keycode="77"
             app:layout_constraintStart_toEndOf="@+id/test_button_kbd"
-            app:layout_constraintTop_toTopOf="@+id/test_button_kbd"
-            app:sticky="true" />
+            app:layout_constraintTop_toTopOf="@+id/test_button_kbd" />
 
         <git.artdeell.dnbootstrap.input.ControlButton
             android:id="@+id/test_button_f5"
@@ -80,8 +76,18 @@
             android:textSize="20sp"
             app:button_keycode="78"
             app:layout_constraintStart_toEndOf="@id/test_button_m"
-            app:layout_constraintTop_toTopOf="@+id/test_button_kbd"
-            app:sticky="true" />
+            app:layout_constraintTop_toTopOf="@+id/test_button_kbd" />
+
+        <git.artdeell.dnbootstrap.input.ControlButton
+            android:id="@+id/test_button_c"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginStart="10dp"
+            android:foreground="@drawable/stats"
+            android:textSize="20sp"
+            app:button_keycode="67"
+            app:layout_constraintStart_toEndOf="@+id/test_button_f5"
+            app:layout_constraintTop_toTopOf="@+id/test_button_f5" />
 
         <git.artdeell.dnbootstrap.input.ControlButton
             android:id="@+id/test_button_e"
@@ -94,7 +100,7 @@
             app:layout_constraintEnd_toStartOf="@+id/test_button_sec"
             app:layout_constraintTop_toBottomOf="@+id/test_button_sec" />
 
-        <git.artdeell.dnbootstrap.input.ControlButton
+        <git.artdeell.dnbootstrap.input.ControlButtonDrag
             android:id="@+id/test_button_shift"
             android:layout_width="64dp"
             android:layout_height="64dp"
@@ -242,7 +248,7 @@
         <git.artdeell.dnbootstrap.input.ControlJoystick
             android:id="@+id/joystickmovement"
             android:layout_width="220dp"
-            android:layout_height="200dp"
+            android:layout_height="220dp"
             android:layout_marginStart="96dp"
             android:layout_marginBottom="96dp"
             app:cursorPassThru="false"
@@ -251,8 +257,7 @@
             app:joystickKeyRight="68"
             app:joystickKeyUp="87"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:sticky="true" />
+            app:layout_constraintStart_toStartOf="parent" />
 
 
     </git.artdeell.dnbootstrap.input.ControlLayout>
