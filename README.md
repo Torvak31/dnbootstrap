@@ -10,3 +10,5 @@ What I (AI) added:
 - minecraft mobile touch controls (short touch = right mouse click, long touch holding = left mouse holding)
 
 For SHIFT and CTRL to work you need to assign the buttons inside the controls settings.
+
+![alt text](Screenshot.jpg "Logo Title Text 1")
