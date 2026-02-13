@@ -3,7 +3,6 @@ package git.artdeell.dnbootstrap.input;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -13,7 +12,6 @@ import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,8 +20,11 @@ import java.util.Set;
 
 import git.artdeell.dnbootstrap.glfw.GLFW;
 import git.artdeell.dnbootstrap.glfw.KeyCodes;
+import git.artdeell.dnbootstrap.glfw.GrabListener;
+import git.artdeell.dnbootstrap.input.model.InputConfiguration;
+import git.artdeell.dnbootstrap.input.model.VisibilityConfiguration;
 
-public class ControlLayout extends ConstraintLayout {
+public class ControlLayout extends LoadableButtonLayout implements GrabListener {
     private final Rect hitTestRect = new Rect();
     private final HashMap<Integer, HitTarget> lastHitTargets = new HashMap<>();
     private final Set<HitTarget> allHitTargets = new HashSet<>();
@@ -33,14 +34,15 @@ public class ControlLayout extends ConstraintLayout {
 
     public ControlLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        GLFW.addGrabListener(this);
     }
 
     public ControlLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+        this(context, attrs, defStyleAttr, 0);
     }
 
     public ControlLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public ControlLayout(@NonNull Context context) {
@@ -70,12 +72,15 @@ public class ControlLayout extends ConstraintLayout {
     public void onViewAdded(View view) {
         super.onViewAdded(view);
         if(!(view instanceof LayoutTouchConsumer)) return;
-        allHitTargets.add(new HitTarget((LayoutTouchConsumer) view));
+        LayoutTouchConsumer layoutTouchConsumer = (LayoutTouchConsumer)view;
+        allHitTargets.add(new HitTarget(layoutTouchConsumer));
+        updateVisibility(layoutTouchConsumer);
     }
 
     @Override
     public void onViewRemoved(View view) {
         super.onViewRemoved(view);
+        if(allHitTargets.isEmpty()) return;
         if(!(view instanceof LayoutTouchConsumer)) return;
         Iterator<HitTarget> iter = allHitTargets.iterator();
         while(iter.hasNext()) {
@@ -83,6 +88,12 @@ public class ControlLayout extends ConstraintLayout {
             iter.remove();
             break;
         }
+    }
+
+    @Override
+    protected void onRemoveAllViews() {
+        super.onRemoveAllViews();
+        allHitTargets.clear();
     }
 
     private void processPointer(MotionEvent event, int pointer, int action) {
@@ -144,6 +155,26 @@ public class ControlLayout extends ConstraintLayout {
         return true;
     }
 
+    @Override
+    public void onGrabState(boolean isGrabbing) {
+        post(this::updateVisibility);
+    }
+
+    private void updateVisibility(LayoutTouchConsumer layoutTouchConsumer) {
+        boolean isGrabbing = GLFW.isGrabbing();
+        VisibilityConfiguration visibilityConfiguration = layoutTouchConsumer.getVisibilityConfiguration();
+        boolean visible = visibilityConfiguration.showInGame && isGrabbing;
+        visible |= visibilityConfiguration.showInMenu && !isGrabbing;
+        layoutTouchConsumer.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    private void updateVisibility() {
+        for(HitTarget hitTarget : allHitTargets) {
+            if(hitTarget == defaultHitTarget) continue;
+            updateVisibility(hitTarget.consumer);
+        }
+    }
+
     private class HitTarget {
         public final @NonNull LayoutTouchConsumer consumer;
         private int firstTouchedPointer;
@@ -183,7 +214,6 @@ public class ControlLayout extends ConstraintLayout {
         private boolean deltaReady = false;
         private float lastX, lastY;
 
-        // --- New Logic Fields ---
         private static final long LONG_PRESS_THRESHOLD_MS = 150; // Time required to trigger "Break" (Left Click)
         private static final float MOVE_TOLERANCE_PX = 20.0f;    // Max movement allowed to still count as a "Place" (Right Click)
 
@@ -286,6 +316,9 @@ public class ControlLayout extends ConstraintLayout {
         }
 
         @Override
+        public void setVisibility(int visibility) {}
+
+        @Override
         public int getLeft() {
             return 0;
         }
@@ -299,6 +332,11 @@ public class ControlLayout extends ConstraintLayout {
         @Override
         public InputConfiguration getInputConfiguration() {
             return defaultConfiguration;
+        }
+
+        @Override
+        public VisibilityConfiguration getVisibilityConfiguration() {
+            return null;
         }
     }
 }

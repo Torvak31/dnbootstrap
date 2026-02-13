@@ -4,7 +4,6 @@ import static android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,12 +11,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.WindowInsets;
-import android.view.WindowInsetsController;
-import android.widget.Toast;
+import android.view.ViewGroup;
 
 import androidx.annotation.RequiresApi;
 
@@ -27,11 +24,16 @@ import java.io.InputStream;
 import git.artdeell.dnbootstrap.assets.AppDirs;
 import git.artdeell.dnbootstrap.glfw.GLFW;
 import git.artdeell.dnbootstrap.glfw.KeyCodes;
+import git.artdeell.dnbootstrap.input.ControlLayout;
 import git.artdeell.dnbootstrap.input.SoftInputCallback;
 import git.artdeell.dnbootstrap.input.TouchCharInput;
+import git.artdeell.dnbootstrap.input.editor.ControlEditorLayout;
+import git.artdeell.dnbootstrap.input.editor.LayoutEditorHost;
+import git.artdeell.dnbootstrap.utils.InsetUtils;
+import git.artdeell.dnbootstrap.utils.Utils;
 import org.apache.commons.io.FileUtils; // Already in your project via AssetsExtractor
 
-public class MainActivity extends Activity implements SoftInputCallback {
+public class MainActivity extends Activity implements SoftInputCallback, LayoutEditorHost {
     static {
         System.loadLibrary("glfw");
         GLFW.initialize();
@@ -39,6 +41,8 @@ public class MainActivity extends Activity implements SoftInputCallback {
     }
 
     private TouchCharInput touchCharInput;
+    private ControlLayout controlLayout;
+    private View layoutEditor;
 
     private static boolean isRunning = false;
 
@@ -49,6 +53,8 @@ public class MainActivity extends Activity implements SoftInputCallback {
         setContentView(R.layout.activity_main);
         SurfaceView surfaceView = findViewById(R.id.surface_view);
         touchCharInput = findViewById(R.id.touch_char_input);
+        controlLayout = findViewById(R.id.control_layout);
+        InsetUtils.setInsetsMode(this, true, false);
         surfaceView.getHolder().addCallback(new NativeSurfaceListener());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerOnBackInvoked();
@@ -79,23 +85,33 @@ public class MainActivity extends Activity implements SoftInputCallback {
         getOnBackInvokedDispatcher().registerOnBackInvokedCallback(PRIORITY_DEFAULT, this::onBackPressed);
     }
 
-    public void kickstart() {
-        try {
-            DotnetStarter.kickstart(getFilesDir(), new File(getApplicationInfo().nativeLibraryDir));
-        }catch (Throwable t) {
-            showErrorDialog(t);
-        }
+    @Override
+    public void openLayoutEditor() {
+        ViewGroup controlLayoutParent = (ViewGroup) controlLayout.getParent();
+        controlLayoutParent.removeView(controlLayout);
+        layoutEditor = LayoutInflater.from(this).inflate(R.layout.controls_editor, controlLayoutParent, false);
+        ControlEditorLayout editorLayout = layoutEditor.findViewById(R.id.control_layout_editor);
+        editorLayout.setEditorHost(this);
+        controlLayoutParent.addView(layoutEditor);
     }
 
-    private void showErrorDialog(Throwable t) {
-        Log.w("MainActivity", "Showing error", t);
-        runOnUiThread(()->{
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.error)
-                    .setMessage(ThrowableUtil.printStackTrace(t))
-                    .setPositiveButton(android.R.string.ok, (d, v)->finish())
-                    .show();
-        });
+    @Override
+    public void exitLayoutEditor() {
+        if(layoutEditor == null) return;
+        ViewGroup editorParent = (ViewGroup) layoutEditor.getParent();
+        editorParent.removeView(layoutEditor);
+        editorParent.addView(controlLayout);
+        controlLayout.loadAsync();
+        layoutEditor = null;
+    }
+
+
+    public void kickstart() {
+        try {
+            DotnetStarter.kickstart(new AppDirs(getFilesDir()), new File(getApplicationInfo().nativeLibraryDir));
+        }catch (Throwable t) {
+            Utils.showErrorDialog(this, t, true);
+        }
     }
 
     @SuppressLint("GestureBackNavigation")

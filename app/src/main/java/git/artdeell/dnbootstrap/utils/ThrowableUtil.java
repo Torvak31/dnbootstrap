@@ -1,4 +1,4 @@
-package git.artdeell.dnbootstrap;
+package git.artdeell.dnbootstrap.utils;
 
 import java.io.IOException;
 import java.io.PrintWriter;

@@ -1,7 +1,6 @@
 package git.artdeell.dnbootstrap.assets;
 
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.net.Uri;
 import android.util.Log;
@@ -9,12 +8,12 @@ import android.util.Log;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 
-import git.artdeell.dnbootstrap.Utils;
+import git.artdeell.dnbootstrap.utils.Utils;
 import git.artdeell.dnbootstrap.io.IOUtil;
 import git.artdeell.dnbootstrap.io.ReadCountInputStream;
 
@@ -45,24 +44,34 @@ public class AssetsExtractor implements Runnable, ReadCountInputStream.Callback 
         }
     }
 
-    private void runCatching() throws Exception {
-        AppDirs appDirs = new AppDirs(appContext.getFilesDir());
-        AssetManager assetManager = appContext.getAssets();
-        FileUtils.deleteDirectory(appDirs.vs);
-        FileUtils.deleteDirectory(appDirs.runtime);
-        if(totalSize != -1) totalSize += 22673999; // TODO remove hardcoded size
+    private void extractGame(AppDirs appDirs) throws IOException {
         try(InputStream inputStream = appContext.getContentResolver().openInputStream(gameUri)) {
             InputStream fileInputStream = new ReadCountInputStream(inputStream, this);
             IOUtil.extractTarGzFile(fileInputStream, appDirs.vs);
             IOUtil.markComponentInstalled(appDirs.vs);
         }
-        try(InputStream assetStream = assetManager.open("dotnet-runtime.tgz")) {
+    }
+
+    private void extractAppComponent(AssetManager assetManager, String assetName, File outDir) throws Exception {
+        try(InputStream assetStream = assetManager.open(assetName)) {
             InputStream fileInputStream = new ReadCountInputStream(assetStream, this);
-            IOUtil.extractTarGzFile(fileInputStream, appDirs.runtime);
-            IOUtil.markComponentInstalled(appDirs.runtime);
-            complete.set(true);
-            callProgressCallback();
+            IOUtil.extractTarGzFile(fileInputStream, outDir);
+            IOUtil.markComponentInstalled(outDir);
         }
+    }
+
+    private void runCatching() throws Exception {
+        AppDirs appDirs = new AppDirs(appContext.getFilesDir());
+        AssetManager assetManager = appContext.getAssets();
+        if(gameUri != null) FileUtils.deleteDirectory(appDirs.vs);
+        FileUtils.deleteDirectory(appDirs.runtime);
+        FileUtils.deleteDirectory(appDirs.fontconfig);
+        if(totalSize != -1) totalSize += 22673999 + 1137044; // TODO remove hardcoded size
+        if(gameUri != null) extractGame(appDirs);
+        extractAppComponent(assetManager, "dotnet-runtime.tgz", appDirs.runtime);
+        extractAppComponent(assetManager, "fontconfig.tgz", appDirs.fontconfig);
+        complete.set(true);
+        callProgressCallback();
     }
 
     public double getProgress() {
