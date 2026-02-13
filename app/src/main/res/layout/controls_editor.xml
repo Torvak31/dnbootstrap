@@ -10,7 +10,7 @@
         android:textSize="20sp"
         android:textColor="?android:attr/textColorSecondary"
         android:gravity="center" />
-    <git.artdeell.dnbootstrap.input.editor.ControlEditorLayout
+    <git.artdeell.dnbootstrap_test.input.editor.ControlEditorLayout
         android:id="@+id/control_layout_editor"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
