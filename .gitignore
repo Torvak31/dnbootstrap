@@ -6,8 +6,7 @@
 /.idea/modules.xml
 /.idea/workspace.xml
 /.idea/navEditor.xml
-/.idea/assetWizardSettings.xml/
-/.idea/studiobot.xml
+/.idea/assetWizardSettings.xml
 .DS_Store
 /build
 /captures
@@ -16,4 +15,3 @@
 local.properties
 /app/libs/ltw-release.aar
 /app/libs/ltw-debug.aar
-.vscode/settings.json

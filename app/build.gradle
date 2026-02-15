@@ -3,12 +3,12 @@ plugins {
 }
 
 android {
-    namespace 'git.artdeell.dnbootstrap_test'
+    namespace 'git.artdeell.dnbootstrap'
 
     compileSdk = 36
 
     defaultConfig {
-        applicationId "git.artdeell.dnbootstrap_test"
+        applicationId "git.artdeell.dnbootstrap"
         minSdk 21
         targetSdk 36
         versionCode 1
