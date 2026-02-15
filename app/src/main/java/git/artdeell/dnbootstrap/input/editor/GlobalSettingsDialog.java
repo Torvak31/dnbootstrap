@@ -12,7 +12,9 @@ import java.util.Locale;
 
 import git.artdeell.dnbootstrap.R;
 import git.artdeell.dnbootstrap.input.ControlButton;
+import git.artdeell.dnbootstrap.input.Joystick;
 import git.artdeell.dnbootstrap.input.model.ControlButtonData;
+import git.artdeell.dnbootstrap.input.model.JoystickData;
 
 public class GlobalSettingsDialog extends PropertyDialog implements SeekBar.OnSeekBarChangeListener {
     private final ControlEditorLayout parent;
@@ -39,6 +41,10 @@ public class GlobalSettingsDialog extends PropertyDialog implements SeekBar.OnSe
         gridPitchSeek.setOnSeekBarChangeListener(this);
         dialog.findViewById(R.id.editor_global_add_button).setOnClickListener(v->{
             parent.addView(new ControlButton(parent.getContext(), ControlButtonData.createDefault()));
+            hide();
+        });
+        dialog.findViewById(R.id.editor_global_add_joystick).setOnClickListener(v->{
+            parent.addView(new Joystick(parent.getContext(), JoystickData.createDefault()));
             hide();
         });
         setupAlertDialogButtons((AlertDialog) dialog);

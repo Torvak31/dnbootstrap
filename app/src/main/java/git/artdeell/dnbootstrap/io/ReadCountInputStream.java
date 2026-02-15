@@ -1,7 +1,5 @@
 package git.artdeell.dnbootstrap.io;
 
-import android.util.Log;
-
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;

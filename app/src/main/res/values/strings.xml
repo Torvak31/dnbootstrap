@@ -25,10 +25,16 @@
     <string name="grid_layout_global_auto_align">Automatically select alignment settings</string>
     <string name="grid_layout_global_edit_title">Global settings</string>
     <string name="grid_layout_global_add_button">Add button</string>
+    <string name="grid_layout_global_add_joystick">Add joystick</string>
     <string name="grid_layout_global_save">Save</string>
     <string name="grid_layout_global_exit">Exit</string>
     <string name="grid_layout_global_must_have_editor_btn">The control layout must have a button to open the layout editor!</string>
     <string name="grid_layout_editor_hint">Tap a button to edit its settings\nTap the grid to edit global settings and add buttons</string>
+    <string name="joystick_label">Label</string>
+    <string name="joystick_sensitivity">Sensitivity</string>
+    <string name="joystick_auto_center">Auto-center joystick</string>
+    <string name="grid_layout_show_in_game">Show in game</string>
+    <string name="grid_layout_show_in_menu">Show in menu</string>
     <string name="manage_data_uninstall_game">Uninstall Vintage Story (preserves user data)</string>
     <string name="manage_data_uninstall_components">Uninstall all components (preserves user data)</string>
     <string name="manage_data_uninstall_everything">Clear all data (WILL DELETE YOUR SAVES)</string>

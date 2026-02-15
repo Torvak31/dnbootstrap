@@ -2,6 +2,7 @@ package git.artdeell.dnbootstrap.input;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,6 +22,7 @@ import java.util.Set;
 import git.artdeell.dnbootstrap.glfw.GLFW;
 import git.artdeell.dnbootstrap.glfw.KeyCodes;
 import git.artdeell.dnbootstrap.glfw.GrabListener;
+import git.artdeell.dnbootstrap.glfw.MouseCodes;
 import git.artdeell.dnbootstrap.input.model.InputConfiguration;
 import git.artdeell.dnbootstrap.input.model.VisibilityConfiguration;
 
@@ -213,73 +215,67 @@ public class ControlLayout extends LoadableButtonLayout implements GrabListener 
         private final InputConfiguration defaultConfiguration = new InputConfiguration();
         private boolean deltaReady = false;
         private float lastX, lastY;
-
-        private static final long LONG_PRESS_THRESHOLD_MS = 150; // Time required to trigger "Break" (Left Click)
-        private static final float MOVE_TOLERANCE_PX = 20.0f;    // Max movement allowed to still count as a "Place" (Right Click)
-
-        private long touchStartTime;
-        private float touchStartX, touchStartY;
-        private boolean isLeftClickActive = false;
-        private boolean hasMovedSignificantly = false;
-
-        Runnable r = new Runnable() {
-            @Override
-            public void run(){
-                GLFW.sendMouseEvent(KeyCodes.GLFW_MOUSE_BUTTON_RIGHT, KeyCodes.GLFW_RELEASE, 0);
-            }
-        };
+        private long touchDownTime = 0;
+        private boolean isLongPress = false;
+        private static final long LONG_PRESS_THRESHOLD = 200; // milliseconds
+        private float touchDownX = 0f, touchDownY = 0f;
+        private boolean touchMovedTooFar = false;
+        private static final float MOVE_SLOP = 20f; // pixels
 
         @Override
         public void onTouchState(boolean isTouched) {
-            if (!isTouched) {
-                // Action Up (Finger Lifted)
-                if (isLeftClickActive) {
-                    // If we were breaking (Left Click held), release it.
-                    GLFW.sendMouseEvent(KeyCodes.GLFW_MOUSE_BUTTON_LEFT, KeyCodes.GLFW_RELEASE, 0);
-                } else {
-                    // If we were not breaking, check if it was a short tap.
-                    // Conditions: Short duration AND didn't move far.
-                    long duration = System.currentTimeMillis() - touchStartTime;
-                    if (duration < LONG_PRESS_THRESHOLD_MS && !hasMovedSignificantly) {
-                        // Trigger Right Click (Place)
-                        GLFW.sendMouseEvent(KeyCodes.GLFW_MOUSE_BUTTON_RIGHT, KeyCodes.GLFW_PRESS, 0);
-                        // Release after short time else game not registering
-                        scheduler.schedule(new Runnable() {
-                            @Override
-                            public void run() {
-                                GLFW.sendMouseEvent(KeyCodes.GLFW_MOUSE_BUTTON_RIGHT, KeyCodes.GLFW_RELEASE, 0);
-                            }
-                        }, 10, TimeUnit.MILLISECONDS);
-                        //Toast.makeText(cont, "Mouse right click (release)", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                // Reset standard tracking
-                lastX = lastY = 0;
-                deltaReady = false;
+            if(isTouched) {
+                // Touch down: record the time and reset movement state
+                touchDownTime = System.currentTimeMillis();
+                isLongPress = false;
+                touchMovedTooFar = false;
             } else {
-                // Action Down (Finger Touched)
-                // Reset logic flags
-                isLeftClickActive = false;
-                hasMovedSignificantly = false;
-                // Record start time
-                touchStartTime = System.currentTimeMillis();
+                // Touch up: handle breaking/placing logic
+                long touchDuration = System.currentTimeMillis() - touchDownTime;
+
+                if(isLongPress) {
+                    // Release left mouse button (breaking)
+                    GLFW.sendMouseEvent(MouseCodes.GLFW_MOUSE_BUTTON_LEFT, KeyCodes.GLFW_RELEASE, 0);
+                } else if(touchDuration < LONG_PRESS_THRESHOLD && !touchMovedTooFar) {
+                    // Short tap: send right mouse button (placing)
+                    GLFW.sendMouseEvent(MouseCodes.GLFW_MOUSE_BUTTON_RIGHT, KeyCodes.GLFW_PRESS, 0);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            GLFW.sendMouseEvent(MouseCodes.GLFW_MOUSE_BUTTON_RIGHT, KeyCodes.GLFW_RELEASE, 0);
+                        }
+                    }, 20);
+                }
             }
+            lastX = lastY = 0;
+            deltaReady = false;
         }
 
         @Override
         public void onTouchPosition(float x, float y) {
-            if (!deltaReady) {
+            if(!deltaReady) {
                 lastX = x;
                 lastY = y;
-                // Capture the initial start position on the first movement event
-                touchStartX = x;
-                touchStartY = y;
+                touchDownX = x;
+                touchDownY = y;
                 deltaReady = true;
                 return;
             }
 
-            // --- Original Cursor Movement Logic ---
+            // If the finger has moved too far from initial down position, mark it
+            float dxFromDown = x - touchDownX;
+            float dyFromDown = y - touchDownY;
+            if(!touchMovedTooFar && (dxFromDown * dxFromDown + dyFromDown * dyFromDown) > MOVE_SLOP * MOVE_SLOP) {
+                touchMovedTooFar = true;
+            }
+
+            // Check if touch duration exceeded threshold for long press detection and hasn't moved too far
+            if(!isLongPress && !touchMovedTooFar && System.currentTimeMillis() - touchDownTime >= LONG_PRESS_THRESHOLD) {
+                isLongPress = true;
+                // Send left mouse button press (breaking)
+                GLFW.sendMouseEvent(MouseCodes.GLFW_MOUSE_BUTTON_LEFT, KeyCodes.GLFW_PRESS, 0);
+            }
+
             float deltaX = x - lastX;
             float deltaY = y - lastY;
             GLFW.cursorX += deltaX / getWidth();
@@ -287,32 +283,6 @@ public class ControlLayout extends LoadableButtonLayout implements GrabListener 
             GLFW.sendMousePos();
             lastX = x;
             lastY = y;
-
-            // --- New Break/Drag Logic ---
-            // We only check for "Long Press to Break" if we haven't already started breaking
-            if (!isLeftClickActive) {
-                // Calculate total distance from the initial touch point
-                float totalDeltaX = x - touchStartX;
-                float totalDeltaY = y - touchStartY;
-
-                // Check if we moved outside the tolerance (Pythagorean theorem)
-                // We compare squared distance to avoid expensive Math.sqrt calls
-                if ((totalDeltaX * totalDeltaX + totalDeltaY * totalDeltaY) > (MOVE_TOLERANCE_PX * MOVE_TOLERANCE_PX)) {
-                    hasMovedSignificantly = true;
-                }
-
-                // If we haven't moved too much, check if enough time has passed to trigger "Break"
-                if (!hasMovedSignificantly) {
-                    long duration = System.currentTimeMillis() - touchStartTime;
-                    if (duration >= LONG_PRESS_THRESHOLD_MS) {
-                        // Trigger Left Click (Break)
-                        GLFW.sendMouseEvent(KeyCodes.GLFW_MOUSE_BUTTON_LEFT, KeyCodes.GLFW_PRESS, 0);
-                        isLeftClickActive = true;
-                        // Once active, movement is handled by the game logic (cursor updates),
-                        // and the left click state remains held until onTouchState(false).
-                    }
-                }
-            }
         }
 
         @Override

@@ -17,6 +17,7 @@ public class ViewCreatorHelper implements JsonDeserializer<ViewCreator>, JsonSer
         String type = jsonObject.get("type").getAsString();
         switch (type) {
             case ControlButtonData.TYPE: return context.deserialize(json, ControlButtonData.class);
+            case JoystickData.TYPE: return context.deserialize(json, JoystickData.class);
             default: throw new JsonParseException("Unknown ViewCreator type: "+type);
         }
     }

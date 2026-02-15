@@ -3,10 +3,8 @@ package git.artdeell.dnbootstrap.input.editor;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.widget.EditText;
-import android.widget.Spinner;
+
 import git.artdeell.dnbootstrap.R;
-import git.artdeell.dnbootstrap.input.LoadableButtonLayout;
 
 public abstract class PropertyDialog {
     private final int viewId;

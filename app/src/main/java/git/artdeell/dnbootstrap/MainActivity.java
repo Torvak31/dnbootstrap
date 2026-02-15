@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
@@ -31,7 +32,7 @@ import git.artdeell.dnbootstrap.input.editor.ControlEditorLayout;
 import git.artdeell.dnbootstrap.input.editor.LayoutEditorHost;
 import git.artdeell.dnbootstrap.utils.InsetUtils;
 import git.artdeell.dnbootstrap.utils.Utils;
-import org.apache.commons.io.FileUtils; // Already in your project via AssetsExtractor
+import org.apache.commons.io.FileUtils;
 
 public class MainActivity extends Activity implements SoftInputCallback, LayoutEditorHost {
     static {
@@ -122,40 +123,6 @@ public class MainActivity extends Activity implements SoftInputCallback, LayoutE
     }
 
     public static native void runDotnet(String dotnetRoot, String vsDir);
-
-    // Hide status bar
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            hideSystemUI();
-        }
-    }
-
-    private void hideSystemUI() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // For Android 11 (API Level 30) and above
-            WindowInsetsController controller = getWindow().getInsetsController();
-            if (controller != null) {
-                controller.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
-                controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-            }
-        } else {
-            // For older versions (Legacy approach)
-            View decorView = getWindow().getDecorView();
-            decorView.setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN);
-        }
-    }
-
-    // =========================================================================
-    // MOD INSTALLATION LOGIC STARTS HERE
-    // =========================================================================
 
     private void handleZipIntent(Intent intent) {
         if (Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null) {
