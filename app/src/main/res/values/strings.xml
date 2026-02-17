@@ -21,6 +21,9 @@
     <string name="grid_layout_edit_clone">Clone</string>
     <string name="grid_layout_edit_delete">Delete</string>
     <string name="grid_layout_edit_button_label">Label</string>
+    <string name="grid_layout_edit_background">Background Color and Icon</string>
+    <string name="grid_layout_edit_background_color">Color</string>
+    <string name="grid_layout_edit_background_icon_description">Icon</string>
     <string name="grid_layout_global_grid_pitch">Grid pitch</string>
     <string name="grid_layout_global_auto_align">Automatically select alignment settings</string>
     <string name="grid_layout_global_edit_title">Global settings</string>

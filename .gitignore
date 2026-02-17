@@ -15,3 +15,4 @@
 local.properties
 /app/libs/ltw-release.aar
 /app/libs/ltw-debug.aar
+/.vscode

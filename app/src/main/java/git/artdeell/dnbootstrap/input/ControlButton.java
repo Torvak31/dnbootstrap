@@ -2,11 +2,15 @@ package git.artdeell.dnbootstrap.input;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.BlendMode;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 
 import git.artdeell.dnbootstrap.R;
 import git.artdeell.dnbootstrap.glfw.GLFW;
@@ -30,6 +34,7 @@ public class ControlButton extends androidx.appcompat.widget.AppCompatTextView i
         this.controlButtonData = controlButtonData;
         setLayoutParams(controlButtonData.layoutParams);
         setText(controlButtonData.label);
+        applyBackground();
     }
 
     public ControlButton(@NonNull Context context) {
@@ -140,5 +145,37 @@ public class ControlButton extends androidx.appcompat.widget.AppCompatTextView i
     @Override
     public void onGrabState(boolean isGrabbing) {
 
+    }
+
+    public void applyBackground() {
+        setBackground(null);
+
+        if (controlButtonData.backgroundAssetId != null &&
+                !controlButtonData.backgroundAssetId.isEmpty() &&
+                !controlButtonData.backgroundAssetId.equals("None")) {
+            int drawableId = getResources().getIdentifier(
+                    controlButtonData.backgroundAssetId,
+                    "drawable",
+                    getContext().getPackageName()
+            );
+            if (drawableId != 0) {
+                Drawable assetDrawable = AppCompatResources.getDrawable(getContext(), drawableId);
+
+                if(controlButtonData.backgroundColor != 0) {
+                    android.graphics.drawable.ColorDrawable colorDrawable =
+                            new android.graphics.drawable.ColorDrawable(controlButtonData.backgroundColor);
+                    android.graphics.drawable.LayerDrawable layerDrawable =
+                            new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{
+                                    colorDrawable,
+                                    assetDrawable
+                            });
+                    setBackground(layerDrawable);
+                    return;
+                }
+                setBackgroundDrawable(assetDrawable);
+            }
+        } else if (controlButtonData.backgroundColor != 0) {
+            setBackgroundColor(controlButtonData.backgroundColor);
+        }
     }
 }

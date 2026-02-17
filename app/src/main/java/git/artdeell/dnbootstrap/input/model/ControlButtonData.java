@@ -14,6 +14,8 @@ public class ControlButtonData extends VisibilityConfiguration implements ViewCr
     public InputConfiguration inputConfiguration;
     public String label;
     public int[] keyCodes;
+    public int backgroundColor;
+    public String backgroundAssetId;
 
     public ControlButtonData() {}
 
@@ -24,6 +26,8 @@ public class ControlButtonData extends VisibilityConfiguration implements ViewCr
         this.keyCodes = Arrays.copyOf(src.keyCodes, src.keyCodes.length);
         this.showInGame = src.showInGame;
         this.showInMenu = src.showInMenu;
+        this.backgroundColor = src.backgroundColor;
+        this.backgroundAssetId = src.backgroundAssetId;
     }
 
     public static ControlButtonData createDefault() {
@@ -37,6 +41,8 @@ public class ControlButtonData extends VisibilityConfiguration implements ViewCr
         controlButtonData.layoutParams.offsetVertical = 6;
         controlButtonData.inputConfiguration = new InputConfiguration();
         controlButtonData.inputConfiguration.sticky = true;
+        controlButtonData.backgroundColor = 0;
+        controlButtonData.backgroundAssetId = "";
         return controlButtonData;
     }
 
