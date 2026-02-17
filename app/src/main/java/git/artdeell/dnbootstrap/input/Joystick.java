@@ -31,7 +31,6 @@ public class Joystick extends View implements LayoutTouchConsumer, LayoutEditabl
     private float centerX, centerY;
     private float radius;
     private float handleRadius;
-    private float radiusMultiplier = 0.25f;
     private boolean isTouched = false;
     private int activePointerId = -1;
     private int lastSentKeyMask = 0;  // Bitmask for currently pressed keys
@@ -41,21 +40,21 @@ public class Joystick extends View implements LayoutTouchConsumer, LayoutEditabl
     private static final int Right = 8;
 
     public Joystick(@NonNull Context context, JoystickData joystickData) {
-        super(context, null, R.attr.controlButtonStyle);
+        super(context, null, R.attr.joystickStyle);
         this.joystickData = joystickData;
         setLayoutParams(joystickData.layoutParams);
 
         borderPaint = new Paint();
-        borderPaint.setColor(Color.WHITE);
+        borderPaint.setColor(0x3fffffff);
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setStrokeWidth(2f);
 
         fillPaint = new Paint();
-        fillPaint.setColor(Color.argb(50, 150, 150, 150));
+        fillPaint.setColor(0x3f000000);
         fillPaint.setStyle(Paint.Style.FILL);
 
         handlePaint = new Paint();
-        handlePaint.setColor(Color.GRAY);
+        handlePaint.setColor(0x3fffffff);
         handlePaint.setStyle(Paint.Style.FILL);
     }
 
@@ -64,7 +63,7 @@ public class Joystick extends View implements LayoutTouchConsumer, LayoutEditabl
     }
 
     public Joystick(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, R.attr.controlButtonStyle);
+        this(context, attrs, R.attr.joystickStyle);
     }
 
     public Joystick(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -73,23 +72,22 @@ public class Joystick extends View implements LayoutTouchConsumer, LayoutEditabl
         joystickData.inputConfiguration = new InputConfiguration();
 
         borderPaint = new Paint();
-        borderPaint.setColor(Color.WHITE);
+        borderPaint.setColor(0x3fffffff);
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setStrokeWidth(2f);
 
         fillPaint = new Paint();
-        fillPaint.setColor(Color.argb(50, 150, 150, 150));
+        fillPaint.setColor(0x3f000000);
         fillPaint.setStyle(Paint.Style.FILL);
 
         handlePaint = new Paint();
-        handlePaint.setColor(Color.GRAY);
+        handlePaint.setColor(0x3fffffff);
         handlePaint.setStyle(Paint.Style.FILL);
 
         joystickData.axisCodes = new int[2];
         joystickData.label = "Joystick";
-        joystickData.sensitivity = 50;
         joystickData.autoCenter = true;
-        joystickData.layoutParams = new LoadableButtonLayout.LayoutParams(8, 8);
+        joystickData.layoutParams = new LoadableButtonLayout.LayoutParams(15, 15);
         joystickData.inputConfiguration.sticky = false;
     }
 
@@ -99,7 +97,7 @@ public class Joystick extends View implements LayoutTouchConsumer, LayoutEditabl
         centerX = w / 2f;
         centerY = h / 2f;
         radius = Math.min(w, h) / 2f;
-        handleRadius = radius * radiusMultiplier;
+        handleRadius = radius * 0.25f;
         radius = radius - handleRadius;
         handleX = centerX;
         handleY = centerY;

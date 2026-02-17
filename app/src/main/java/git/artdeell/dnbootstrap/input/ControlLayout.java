@@ -109,7 +109,6 @@ public class ControlLayout extends LoadableButtonLayout implements GrabListener 
                 lastHit.onTouchPosition(pointerId, x - lastHit.consumer.getLeft(),
                         y - lastHit.consumer.getTop());
             }
-            return;  // Skip all other logic
         }else if(action == MotionEvent.ACTION_POINTER_UP) {
             if(lastHit != null) lastHit.onTouchState(pointerId, false);
             lastHitTargets.remove(pointerId);

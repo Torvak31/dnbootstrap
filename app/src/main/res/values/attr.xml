@@ -22,22 +22,12 @@
         <attr name="offsetVertical" format="integer"/>
     </declare-styleable>
 
-    <declare-styleable name="ControlJoystick">
-        <attr name="joystickKeyUp" format="integer" />
-        <attr name="joystickKeyDown" format="integer" />
-        <attr name="joystickKeyLeft" format="integer" />
-        <attr name="joystickKeyRight" format="integer" />
-    </declare-styleable>
-
-    <style name="ControlJoystick">
-        <!-- Default visual / behavior overrides if needed -->
-    </style>
-
-
     <attr name="controlButtonStyle" format="reference"/>
+    <attr name="joystickStyle" format="reference"/>
 
     <style name="AppTheme" parent="@style/Theme.AppCompat">
         <item name="controlButtonStyle">@style/ControlButton</item>
+        <item name="joystickStyle">@style/Joystick</item>
     </style>
 
     <style name="ControlButton">
@@ -46,6 +36,10 @@
         <item name="android:background">#3f000000</item>
         <item name="android:width">64dp</item>
         <item name="android:height">64dp</item>
+    </style>
+
+    <style name="Joystick">
+        <item name="android:background">#00000000</item>
     </style>
 
     <array name="horizontal_alignment_settings">
