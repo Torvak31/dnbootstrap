@@ -5,9 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingHorizontal="@dimen/global_margin"
@@ -22,72 +20,23 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <TextView
-            android:id="@+id/editor_joystick_label_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="300dp"
-            android:text="@string/joystick_label"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/editor_joystick_label_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:inputType="text"
-            app:layout_constraintTop_toBottomOf="@id/editor_joystick_label_title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
         <include
             android:id="@+id/editor_input_config"
             layout="@layout/dialog_editor_input_config"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/global_margin"
-            app:layout_constraintTop_toBottomOf="@id/editor_joystick_label_text"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <TextView
-            android:id="@+id/editor_joystick_sensitivity_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/joystick_sensitivity"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editor_joystick_label_text" />
-
-        <SeekBar
-            android:id="@+id/editor_joystick_sensitivity_seek"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:min="1"
-            android:max="100"
-            android:progress="50"
-            app:layout_constraintTop_toBottomOf="@id/editor_joystick_sensitivity_title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/editor_joystick_sensitivity_label" />
-
-        <TextView
-            android:id="@+id/editor_joystick_sensitivity_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="50%"
-            app:layout_constraintTop_toTopOf="@id/editor_joystick_sensitivity_seek"
-            app:layout_constraintBottom_toBottomOf="@id/editor_joystick_sensitivity_seek"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <CheckBox
             android:id="@+id/editor_joystick_auto_center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/joystick_auto_center"
+            android:layout_marginTop="6dp"
             android:checked="true"
-            android:layout_marginTop="@dimen/global_margin"
-            app:layout_constraintTop_toBottomOf="@id/editor_joystick_sensitivity_seek"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:text="@string/joystick_auto_center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/editor_moves_cursor" />
 
         <CheckBox
             android:id="@+id/editor_joystick_show_in_game"

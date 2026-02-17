@@ -85,7 +85,6 @@ public class Joystick extends View implements LayoutTouchConsumer, LayoutEditabl
         handlePaint.setStyle(Paint.Style.FILL);
 
         joystickData.axisCodes = new int[2];
-        joystickData.label = "Joystick";
         joystickData.autoCenter = true;
         joystickData.layoutParams = new LoadableButtonLayout.LayoutParams(15, 15);
         joystickData.inputConfiguration.sticky = false;

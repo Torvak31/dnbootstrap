@@ -64,6 +64,7 @@ public class ControlLayout extends LoadableButtonLayout implements GrabListener 
     private HitTarget hitTest(int x, int y) {
         for(HitTarget hitTarget : allHitTargets) {
             View child = ((View)hitTarget.consumer);
+            if (child.getVisibility() != View.VISIBLE) continue; // ignore hidden views
             hitTestRect.set(child.getLeft(), child.getTop(), child.getRight(), child.getBottom());
             if(hitTestRect.contains(x,y)) return hitTarget;
         }
