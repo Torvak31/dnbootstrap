@@ -49,6 +49,7 @@ public class ButtonEditorDialog extends InputConfigurationEditorDialog {
     private static final String ASSET_PREFIX = "btn_icon_";
 
     private static final int[] BACKGROUND_COLORS = {
+        0x00000000, // None
         0x80000000, // Transparent
         0x804CAF50, // Green
         0x802196F3, // Blue
@@ -133,9 +134,8 @@ public class ButtonEditorDialog extends InputConfigurationEditorDialog {
         builder.setTitle("Select Color");
 
         RecyclerView recyclerView = new RecyclerView(context);
-        recyclerView.setLayoutManager(new GridLayoutManager(context, 5)); // 5 columns for colors
+        recyclerView.setLayoutManager(new GridLayoutManager(context, 5));
 
-        // Convert int[] to List<GridItem>
         List<GridItem> items = new ArrayList<>();
         for (int color : BACKGROUND_COLORS) {
             items.add(new ColorItem(color));
@@ -144,7 +144,7 @@ public class ButtonEditorDialog extends InputConfigurationEditorDialog {
         GridPickerAdapter adapter = new GridPickerAdapter(
                 context,
                 items,
-                selectedBackgroundColor, // Pass current selection
+                selectedBackgroundColor,
                 (value) -> {
                     selectedBackgroundColor = (Integer) value;
                     updateColorButtonAppearance();
@@ -159,11 +159,11 @@ public class ButtonEditorDialog extends InputConfigurationEditorDialog {
     }
 
     private void updateColorButtonAppearance() {
+        if (selectedBackgroundColor == 0x00000000) {
+            backgroundColorButton.setBackgroundResource(R.drawable.select_empty_material);
+            return;
+        }
         backgroundColorButton.setBackgroundColor(selectedBackgroundColor);
-        int textColor = ColorUtils.calculateLuminance(selectedBackgroundColor) > 0.5
-                ? Color.BLACK
-                : Color.WHITE;
-        backgroundColorButton.setTextColor(textColor);
     }
 
     private void openAssetPickerDialog() {
@@ -172,9 +172,8 @@ public class ButtonEditorDialog extends InputConfigurationEditorDialog {
         builder.setTitle("Select Icon");
 
         RecyclerView recyclerView = new RecyclerView(context);
-        recyclerView.setLayoutManager(new GridLayoutManager(context, 3));
+        recyclerView.setLayoutManager(new GridLayoutManager(context, 5));
 
-        // Convert String[] to List<GridItem>
         List<GridItem> items = new ArrayList<>();
         if (backgroundAssets != null) {
             for (String asset : backgroundAssets) {
@@ -185,7 +184,7 @@ public class ButtonEditorDialog extends InputConfigurationEditorDialog {
         GridPickerAdapter adapter = new GridPickerAdapter(
                 context,
                 items,
-                selectedBackgroundAsset, // Pass current selection
+                selectedBackgroundAsset,
                 (value) -> {
                     selectedBackgroundAsset = (String) value;
                     updateAssetSelectorAppearance();
@@ -203,9 +202,7 @@ public class ButtonEditorDialog extends InputConfigurationEditorDialog {
         String assetName = selectedBackgroundAsset;
         if("None".equals(assetName) || assetName == null || assetName.isEmpty()) {
             backgroundAssetSelector.setImageDrawable(null);
-            backgroundAssetSelector.setBackgroundColor(0xff181818);
-            // Optionally set a placeholder drawable for "None"
-            // backgroundAssetSelector.setImageResource(R.drawable.ic_placeholder);
+            backgroundAssetSelector.setImageResource(R.drawable.select_empty_material);
         } else {
             int drawableId = backgroundAssetSelector.getContext().getResources().getIdentifier(
                     assetName,
@@ -250,153 +247,6 @@ public class ButtonEditorDialog extends InputConfigurationEditorDialog {
             keycodeViews[editingKeycode].setText(keyCode.name());
             controlButtonKeycodes[editingKeycode] = keyCode.code;
             listPopupWindow.dismiss();
-        }
-    }
-
-    public interface GridItem {
-        void bind(ImageView view, Context context);
-        Object getValue();
-    }
-    private static class IconItem implements GridItem {
-        private final String assetName;
-
-        public IconItem(String assetName) {
-            this.assetName = assetName;
-        }
-
-        @Override
-        public void bind(ImageView view, Context context) {
-            if ("None".equals(assetName)) {
-                view.setImageDrawable(null);
-                view.setBackgroundColor(Color.LTGRAY);
-            } else {
-                int drawableId = context.getResources().getIdentifier(assetName, "drawable", context.getPackageName());
-                if (drawableId != 0) {
-                    view.setImageResource(drawableId);
-                } else {
-                    view.setImageDrawable(null);
-                }
-                // Reset background to transparent so the icon shows clearly
-                view.setBackgroundColor(Color.TRANSPARENT);
-            }
-        }
-
-        @Override
-        public Object getValue() {
-            return assetName;
-        }
-    }
-
-    private static class ColorItem implements GridItem {
-        private final int color;
-
-        public ColorItem(int color) {
-            this.color = color;
-        }
-
-        @Override
-        public void bind(ImageView view, Context context) {
-            view.setImageDrawable(null); // Clear any icon
-            view.setBackgroundColor(color);
-        }
-
-        @Override
-        public Object getValue() {
-            return color;
-        }
-    }
-
-    private static class GridPickerAdapter extends RecyclerView.Adapter<GridPickerAdapter.ViewHolder> {
-        private final List<GridItem> items;
-        private final Context context;
-        private Object currentSelection;
-        private final OnItemSelectedListener listener;
-        private AlertDialog dialog;
-
-        public interface OnItemSelectedListener {
-            void onSelected(Object value);
-        }
-
-        public GridPickerAdapter(Context context, List<GridItem> items, Object currentSelection, OnItemSelectedListener listener) {
-            this.context = context;
-            this.items = items;
-            this.currentSelection = currentSelection;
-            this.listener = listener;
-        }
-
-        public void setDialog(AlertDialog dialog) {
-            this.dialog = dialog;
-        }
-
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            // Create a FrameLayout to hold the content and the selection overlay
-            FrameLayout layout = new FrameLayout(context);
-            int size = (int) (80 * context.getResources().getDisplayMetrics().density); // 80dp
-            int padding = (int) (4 * context.getResources().getDisplayMetrics().density); // 4dp
-
-            RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(size, size);
-            layout.setLayoutParams(lp);
-            layout.setPadding(padding, padding, padding, padding);
-
-            // The content view (ImageView for both icons and colors)
-            ImageView content = new ImageView(context);
-            content.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            content.setScaleType(ImageView.ScaleType.FIT_CENTER);
-
-            // The selection overlay (a simple semi-transparent layer)
-            View overlay = new View(context);
-            overlay.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            overlay.setBackgroundColor(Color.parseColor("#80000000")); // Semi-transparent black
-            overlay.setVisibility(View.GONE);
-
-            layout.addView(content);
-            layout.addView(overlay);
-
-            return new ViewHolder(layout, content, overlay);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            GridItem item = items.get(position);
-
-            // Bind data (icon or color)
-            item.bind(holder.content, context);
-
-            // Show selection overlay if this item is selected
-            if (item.getValue().equals(currentSelection)) {
-                holder.selectionOverlay.setVisibility(View.VISIBLE);
-            } else {
-                holder.selectionOverlay.setVisibility(View.GONE);
-            }
-
-            holder.itemView.setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onSelected(item.getValue());
-                }
-                currentSelection = item.getValue();
-                notifyDataSetChanged();
-                if (dialog != null) {
-                    dialog.dismiss();
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return items.size();
-        }
-
-        static class ViewHolder extends RecyclerView.ViewHolder {
-            ImageView content;
-            View selectionOverlay;
-
-            ViewHolder(View itemView, ImageView content, View selectionOverlay) {
-                super(itemView);
-                this.content = content;
-                this.selectionOverlay = selectionOverlay;
-            }
         }
     }
 }

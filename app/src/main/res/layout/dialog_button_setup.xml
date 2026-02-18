@@ -85,21 +85,42 @@
             app:layout_constraintTop_toBottomOf="@id/editor_keycode_select_2"
             app:layout_constraintStart_toStartOf="parent"/>
 
-        <Button
-            android:id="@+id/editor_background_color_button"
+        <TextView
+            android:id="@+id/editor_background_label_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/global_margin_half"
-            android:text="@string/grid_layout_edit_background_color"
+            android:layout_marginBottom="5dp"
+            android:text="@string/grid_layout_edit_background_label_color"
+            app:layout_constraintBottom_toTopOf="@+id/editor_background_color_button"
+            app:layout_constraintEnd_toEndOf="@+id/editor_background_color_button"
+            app:layout_constraintStart_toStartOf="@+id/editor_background_color_button" />
+
+        <Button
+            android:id="@+id/editor_background_color_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/select_empty_material"
+            android:outlineProvider="paddedBounds"
             app:layout_constraintEnd_toStartOf="@id/editor_background_asset_selector"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/editor_background_label" />
 
+        <TextView
+            android:id="@+id/editor_background_label_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="@string/grid_layout_edit_background_label_icon"
+            app:layout_constraintBottom_toTopOf="@+id/editor_background_asset_selector"
+            app:layout_constraintEnd_toEndOf="@+id/editor_background_asset_selector"
+            app:layout_constraintStart_toStartOf="@+id/editor_background_asset_selector" />
+
         <ImageView
             android:id="@+id/editor_background_asset_selector"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:background="#181818"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/select_empty_material"
             app:layout_constraintBottom_toBottomOf="@+id/editor_background_color_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/editor_background_color_button"

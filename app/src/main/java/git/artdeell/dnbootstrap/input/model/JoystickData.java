@@ -14,6 +14,7 @@ public class JoystickData extends VisibilityConfiguration implements ViewCreator
     public InputConfiguration inputConfiguration;
     public int[] axisCodes;
     public boolean autoCenter;
+    public int backgroundColor;
 
     public JoystickData() {}
 
@@ -24,6 +25,7 @@ public class JoystickData extends VisibilityConfiguration implements ViewCreator
         this.autoCenter = src.autoCenter;
         this.showInGame = src.showInGame;
         this.showInMenu = src.showInMenu;
+        this.backgroundColor = src.backgroundColor;
     }
 
     public static JoystickData createDefault() {
@@ -37,6 +39,7 @@ public class JoystickData extends VisibilityConfiguration implements ViewCreator
         joystickData.inputConfiguration = new InputConfiguration();
         joystickData.inputConfiguration.sticky = false;
         joystickData.autoCenter = true;
+        joystickData.backgroundColor = 0;
         return joystickData;
     }
 

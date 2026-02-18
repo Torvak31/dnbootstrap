@@ -31,13 +31,12 @@ public class Joystick extends View implements LayoutTouchConsumer, LayoutEditabl
     private float centerX, centerY;
     private float radius;
     private float handleRadius;
-    private boolean isTouched = false;
-    private int activePointerId = -1;
-    private int lastSentKeyMask = 0;  // Bitmask for currently pressed keys
+    private int lastSentKeyMask = 0;
     private static final int Up = 1;
     private static final int Left = 2;
     private static final int Down = 4;
     private static final int Right = 8;
+    private static final int handleColor = 0x80ffffff;
 
     public Joystick(@NonNull Context context, JoystickData joystickData) {
         super(context, null, R.attr.joystickStyle);
@@ -45,16 +44,16 @@ public class Joystick extends View implements LayoutTouchConsumer, LayoutEditabl
         setLayoutParams(joystickData.layoutParams);
 
         borderPaint = new Paint();
-        borderPaint.setColor(0x3fffffff);
+        borderPaint.setColor(handleColor);
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setStrokeWidth(2f);
 
         fillPaint = new Paint();
-        fillPaint.setColor(0x3f000000);
+        fillPaint.setColor(joystickData.backgroundColor);
         fillPaint.setStyle(Paint.Style.FILL);
 
         handlePaint = new Paint();
-        handlePaint.setColor(0x3fffffff);
+        handlePaint.setColor(handleColor);
         handlePaint.setStyle(Paint.Style.FILL);
     }
 
@@ -72,22 +71,27 @@ public class Joystick extends View implements LayoutTouchConsumer, LayoutEditabl
         joystickData.inputConfiguration = new InputConfiguration();
 
         borderPaint = new Paint();
-        borderPaint.setColor(0x3fffffff);
+        borderPaint.setColor(handleColor);
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setStrokeWidth(2f);
 
         fillPaint = new Paint();
-        fillPaint.setColor(0x3f000000);
+        fillPaint.setColor(joystickData.backgroundColor);
         fillPaint.setStyle(Paint.Style.FILL);
 
         handlePaint = new Paint();
-        handlePaint.setColor(0x3fffffff);
+        handlePaint.setColor(handleColor);
         handlePaint.setStyle(Paint.Style.FILL);
 
         joystickData.axisCodes = new int[2];
         joystickData.autoCenter = true;
         joystickData.layoutParams = new LoadableButtonLayout.LayoutParams(15, 15);
         joystickData.inputConfiguration.sticky = false;
+    }
+
+    public void applyStyling() {
+        fillPaint.setColor(joystickData.backgroundColor);
+        invalidate();
     }
 
     @Override
@@ -106,39 +110,31 @@ public class Joystick extends View implements LayoutTouchConsumer, LayoutEditabl
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        // joystick background circle
         canvas.drawCircle(centerX, centerY, radius, fillPaint);
         canvas.drawCircle(centerX, centerY, radius, borderPaint);
 
-        // joystick handle
         canvas.drawCircle(handleX, handleY, handleRadius, handlePaint);
     }
 
     private void updateJoystickPosition(float x, float y) {
-        // 1. Calculate the desired position based on input + view offset
         float targetX = x + getLeft();
         float targetY = y + getTop();
 
-        // 2. Calculate the distance from the center of the joystick
         float dx = targetX - centerX;
         float dy = targetY - centerY;
         float distance = (float) Math.sqrt(dx * dx + dy * dy);
 
-        // 3. If the distance is greater than the radius, clamp the position
         if (distance > radius) {
-            // Calculate the ratio to scale the vector down to the radius length
             float ratio = radius / distance;
             targetX = centerX + dx * ratio;
             targetY = centerY + dy * ratio;
         }
 
-        // 4. Apply the (possibly clamped) position
         handleX = targetX;
         handleY = targetY;
 
         invalidate();
 
-        // 5. Update key states (logic remains the same)
         float normalizedX = (handleX - centerX) / radius;
         float normalizedY = (handleY - centerY) / radius;
 
@@ -181,7 +177,6 @@ public class Joystick extends View implements LayoutTouchConsumer, LayoutEditabl
 
     @Override
     public void onTouchState(boolean isTouched) {
-        this.isTouched = isTouched;
         if (!isTouched && joystickData.autoCenter) {
             handleX = centerX;
             handleY = centerY;
