@@ -37,6 +37,7 @@ public class ControlEditorLayout extends LoadableButtonLayout {
     private final GlobalSettingsDialog globalSettings;
     private int gridWidth, gridHeight;
     protected boolean autoAlign = true;
+    protected boolean cursorToTouch = false;
     protected float gridPitchDp;
     protected LayoutEditorHost layoutEditorHost;
     private LayoutEditorDialog editorDialog;
@@ -130,6 +131,7 @@ public class ControlEditorLayout extends LoadableButtonLayout {
         LayoutDescription layoutDescription = new LayoutDescription();
         layoutDescription.buttonList = children;
         layoutDescription.gridPitch = gridPitchDp;
+        layoutDescription.cursorToTouch = cursorToTouch;
         return layoutDescription;
     }
 

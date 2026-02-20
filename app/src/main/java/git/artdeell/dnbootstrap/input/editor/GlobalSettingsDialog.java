@@ -20,6 +20,7 @@ public class GlobalSettingsDialog extends PropertyDialog implements SeekBar.OnSe
     private final ControlEditorLayout parent;
     private SeekBar gridPitchSeek;
     private CheckBox autoAlignCheck;
+    private CheckBox cursorBehaviorCheck;
     private TextView gridPitchLabel;
     private float oldGridPitch;
     public GlobalSettingsDialog(ControlEditorLayout parent) {
@@ -31,11 +32,13 @@ public class GlobalSettingsDialog extends PropertyDialog implements SeekBar.OnSe
         createAndShow(context);
         gridPitchSeek.setProgress((int) (oldGridPitch = parent.gridPitchDp));
         autoAlignCheck.setChecked(parent.autoAlign);
+        cursorBehaviorCheck.setChecked(parent.cursorToTouch);
     }
 
     @Override
     protected void inflate(Dialog dialog) {
         autoAlignCheck = dialog.findViewById(R.id.editor_global_auto_align);
+        cursorBehaviorCheck = dialog.findViewById(R.id.editor_global_cursor_behavior);
         gridPitchSeek = dialog.findViewById(R.id.editor_global_pitch_seek);
         gridPitchLabel = dialog.findViewById(R.id.editor_global_pitch_view);
         gridPitchSeek.setOnSeekBarChangeListener(this);
@@ -71,7 +74,8 @@ public class GlobalSettingsDialog extends PropertyDialog implements SeekBar.OnSe
 
     @Override
     protected void onExitWithSave() {
-        parent.autoAlign = autoAlignCheck.isChecked();;
+        parent.autoAlign = autoAlignCheck.isChecked();
+        parent.cursorToTouch = cursorBehaviorCheck.isChecked();
     }
 
     @Override

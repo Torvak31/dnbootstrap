@@ -24,6 +24,8 @@ import git.artdeell.dnbootstrap.glfw.KeyCodes;
 import git.artdeell.dnbootstrap.glfw.GrabListener;
 import git.artdeell.dnbootstrap.glfw.MouseCodes;
 import git.artdeell.dnbootstrap.input.model.InputConfiguration;
+import git.artdeell.dnbootstrap.input.model.LayoutDescription;
+import git.artdeell.dnbootstrap.input.model.ViewCreator;
 import git.artdeell.dnbootstrap.input.model.VisibilityConfiguration;
 
 public class ControlLayout extends LoadableButtonLayout implements GrabListener {
@@ -33,6 +35,7 @@ public class ControlLayout extends LoadableButtonLayout implements GrabListener 
     private final HitTarget defaultHitTarget = new HitTarget(new DefaultConsumer());
     private Context cont = getContext();
     ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    public boolean cursorToTouch = false;
 
     public ControlLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
@@ -99,6 +102,16 @@ public class ControlLayout extends LoadableButtonLayout implements GrabListener 
         allHitTargets.clear();
     }
 
+    public void load(LayoutDescription description) {
+        Context context = getContext();
+        removeAllViews();
+        setGridPitch(description.gridPitch);
+        for(ViewCreator creator : description.buttonList) {
+            addView(creator.createView(context));
+        }
+        this.cursorToTouch = description.cursorToTouch;
+    }
+
     private void processPointer(MotionEvent event, int pointer, int action) {
         int pointerId = event.getPointerId(pointer);
         HitTarget lastHit = lastHitTargets.get(pointerId);
@@ -118,6 +131,7 @@ public class ControlLayout extends LoadableButtonLayout implements GrabListener 
             if(hit != null) {
                 hit.isInitialTarget = true;  // Mark as owning this pointer
                 hit.onTouchState(pointerId, true);
+                hit.onTouchPosition(pointerId, x - hit.consumer.getLeft(), y - hit.consumer.getTop());
             }
             lastHitTargets.put(pointerId, hit);
         }
@@ -222,6 +236,7 @@ public class ControlLayout extends LoadableButtonLayout implements GrabListener 
         private boolean touchMovedTooFar = false;
         private static final float MOVE_SLOP = 20f; // pixels
 
+
         @Override
         public void onTouchState(boolean isTouched) {
             if(isTouched) {
@@ -229,6 +244,7 @@ public class ControlLayout extends LoadableButtonLayout implements GrabListener 
                 touchDownTime = System.currentTimeMillis();
                 isLongPress = false;
                 touchMovedTooFar = false;
+                deltaReady = false;
             } else {
                 // Touch up: handle breaking/placing logic
                 long touchDuration = System.currentTimeMillis() - touchDownTime;
@@ -237,12 +253,18 @@ public class ControlLayout extends LoadableButtonLayout implements GrabListener 
                     // Release left mouse button (breaking)
                     GLFW.sendMouseEvent(MouseCodes.GLFW_MOUSE_BUTTON_LEFT, KeyCodes.GLFW_RELEASE, 0);
                 } else if(touchDuration < LONG_PRESS_THRESHOLD && !touchMovedTooFar) {
-                    // Short tap: send right mouse button (placing)
-                    GLFW.sendMouseEvent(MouseCodes.GLFW_MOUSE_BUTTON_RIGHT, KeyCodes.GLFW_PRESS, 0);
+                    // Short tap: send right mouse button (placing) in game or left mouse button in menu/inventory
+                    int shortTouch;
+                    if(!GLFW.isGrabbing()) {
+                        shortTouch = MouseCodes.GLFW_MOUSE_BUTTON_LEFT;
+                    } else {
+                        shortTouch = MouseCodes.GLFW_MOUSE_BUTTON_RIGHT;
+                    }
+                    GLFW.sendMouseEvent(shortTouch, KeyCodes.GLFW_PRESS, 0);
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            GLFW.sendMouseEvent(MouseCodes.GLFW_MOUSE_BUTTON_RIGHT, KeyCodes.GLFW_RELEASE, 0);
+                            GLFW.sendMouseEvent(shortTouch, KeyCodes.GLFW_RELEASE, 0);
                         }
                     }, 20);
                 }
@@ -259,6 +281,13 @@ public class ControlLayout extends LoadableButtonLayout implements GrabListener 
                 touchDownX = x;
                 touchDownY = y;
                 deltaReady = true;
+
+                // If using Direct Touch, snap cursor to finger immediately on touch down
+                if(cursorToTouch && !GLFW.isGrabbing()) {
+                    GLFW.cursorX = x / getWidth();
+                    GLFW.cursorY = y / getHeight();
+                    GLFW.sendMousePos();
+                }
                 return;
             }
 
@@ -276,11 +305,30 @@ public class ControlLayout extends LoadableButtonLayout implements GrabListener 
                 GLFW.sendMouseEvent(MouseCodes.GLFW_MOUSE_BUTTON_LEFT, KeyCodes.GLFW_PRESS, 0);
             }
 
-            float deltaX = x - lastX;
-            float deltaY = y - lastY;
-            GLFW.cursorX += deltaX / getWidth();
-            GLFW.cursorY += deltaY / getHeight();
-            GLFW.sendMousePos();
+            if(GLFW.isGrabbing()) {
+                // FPS MODE (Looking Around):
+                // Always use Relative Drag to control camera smoothly.
+                float deltaX = x - lastX;
+                float deltaY = y - lastY;
+                GLFW.cursorX += deltaX / getWidth();
+                GLFW.cursorY += deltaY / getHeight();
+                GLFW.sendMousePos();
+            } else if(cursorToTouch) {
+                // MENU MODE (Direct Touch):
+                // Cursor follows finger absolutely.
+                GLFW.cursorX = x / getWidth();
+                GLFW.cursorY = y / getHeight();
+                GLFW.sendMousePos();
+            } else {
+                // MENU MODE (Drag Mode):
+                // Cursor moves relative to finger.
+                float deltaX = x - lastX;
+                float deltaY = y - lastY;
+                GLFW.cursorX += deltaX / getWidth();
+                GLFW.cursorY += deltaY / getHeight();
+                GLFW.sendMousePos();
+            }
+
             lastX = x;
             lastY = y;
         }

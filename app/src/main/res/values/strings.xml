@@ -27,6 +27,7 @@
     <string name="grid_layout_edit_background_icon_description">Icon</string>
     <string name="grid_layout_global_grid_pitch">Grid pitch</string>
     <string name="grid_layout_global_auto_align">Automatically select alignment settings</string>
+    <string name="grid_layout_global_cursor_behavior">Cursor to touch position</string>
     <string name="grid_layout_global_edit_title">Global settings</string>
     <string name="grid_layout_global_add_button">Add button</string>
     <string name="grid_layout_global_add_joystick">Add joystick</string>

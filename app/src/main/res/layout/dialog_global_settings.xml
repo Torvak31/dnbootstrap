@@ -43,13 +43,20 @@
         android:layout_marginTop="@dimen/global_margin"
         app:layout_constraintTop_toBottomOf="@id/editor_global_pitch_seek" />
 
+    <CheckBox
+        android:id="@+id/editor_global_cursor_behavior"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/grid_layout_global_cursor_behavior"
+        app:layout_constraintTop_toBottomOf="@id/editor_global_auto_align" />
+
     <View
         android:id="@+id/editor_global_divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         android:layout_marginTop="@dimen/global_margin"
-        app:layout_constraintTop_toBottomOf="@id/editor_global_auto_align" />
+        app:layout_constraintTop_toBottomOf="@id/editor_global_cursor_behavior" />
 
     <Button
         android:id="@+id/editor_global_add_button"
