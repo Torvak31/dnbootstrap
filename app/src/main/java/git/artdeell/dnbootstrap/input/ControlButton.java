@@ -2,9 +2,7 @@ package git.artdeell.dnbootstrap.input;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.BlendMode;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -28,6 +26,10 @@ import git.artdeell.dnbootstrap.input.model.VisibilityConfiguration;
 
 public class ControlButton extends androidx.appcompat.widget.AppCompatTextView implements LayoutTouchConsumer, LayoutEditable, Recreatable, GrabListener {
     public final ControlButtonData controlButtonData;
+    private boolean firstTouch = true;
+    private double initialCursorX;
+    private double initialCursorY;
+    private float initialTouchX, initialTouchY;
 
     public ControlButton(@NonNull Context context, ControlButtonData controlButtonData) {
         super(context, null, R.attr.controlButtonStyle);
@@ -103,11 +105,28 @@ public class ControlButton extends androidx.appcompat.widget.AppCompatTextView i
         for(int keyCode : controlButtonData.keyCodes) {
             executeKeyEvent(keyCode, state);
         }
+        if (isTouched) {
+            firstTouch = true;
+        }
     }
 
     @Override
     public void onTouchPosition(float x, float y) {
-
+        if (controlButtonData.inputConfiguration.movesCursor) {
+            View rootView = getRootView();
+            if (rootView != null) {
+                if (firstTouch) {
+                    initialCursorX = GLFW.cursorX;
+                    initialCursorY = GLFW.cursorY;
+                    initialTouchX = x;
+                    initialTouchY = y;
+                    firstTouch = false;
+                }
+                GLFW.cursorX = initialCursorX + (x - initialTouchX) / rootView.getWidth();
+                GLFW.cursorY = initialCursorY + (y - initialTouchY) / rootView.getHeight();
+                GLFW.sendMousePos();
+            }
+        }
     }
 
     @Override
