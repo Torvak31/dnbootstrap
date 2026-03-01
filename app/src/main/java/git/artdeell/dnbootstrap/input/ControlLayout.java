@@ -199,6 +199,7 @@ public class ControlLayout extends LoadableButtonLayout implements GrabListener 
 
         private HitTarget(@NonNull LayoutTouchConsumer consumer) {
             this.consumer = consumer;
+            this.firstTouchedPointer = -1;
             this.isInitialTarget = false;
         }
 
