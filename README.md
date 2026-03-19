@@ -7,6 +7,5 @@ What is added:
 - mod importing by selecting "open with" on a zip file in a file manager (not all mods work)
 - minecraft mobile like touch controls (short touch = right mouse click, long touch holding = left mouse holding)
 
-For SHIFT and CTRL to work you need to assign the buttons inside the controls settings.
 
 ![alt text](Screenshot.jpg "Screenshot")
