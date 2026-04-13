@@ -6,16 +6,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: Permission
-        run: chmod +x gradlew
-      - name: Build
-        run: ./gradlew assembleDebug
-      - name: Upload
+
+      - name: Build with Gradle
+        run: |
+          find . -name "gradlew" -exec chmod +x {} \;
+          find . -name "gradlew" -execdir ./gradlew assembleDebug \;
+
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: dnbootstrap-apk
